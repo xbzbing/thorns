@@ -45,12 +45,11 @@ app.conf.update(
 @app.task
 def nmap_dispath(targets, taskid=None):
     # nmap环境参数配置
-    run_script_path = '/home/xbzbing/PycharmProjects/thorns'
     if taskid == None:
         cmdline = 'python wyportmap.py %s' % targets
     else:
         cmdline = 'python wyportmap.py %s %s' % (targets, taskid)
-    nmap_proc = subprocess.Popen(cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cmd=run_script_path)
+    nmap_proc = subprocess.Popen(cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     process_output = nmap_proc.stdout.readlines()
     return process_output
 

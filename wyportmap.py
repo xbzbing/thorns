@@ -6,8 +6,7 @@ import json
 import sys
 from time import sleep
 from libnmap.process import NmapProcess
-from libnmap.reportjson import ReportDecoder, ReportEncoder
-from libnmap.parser import NmapParser, NmapParserException
+from libnmap.parser import NmapParser
 from libnmap.plugins.backendpluginFactory import BackendPluginFactory
 
 # 重试次数 & 超时时间(s)
@@ -120,8 +119,3 @@ if __name__ == "__main__":
     else:
         print ("usage: %s targets taskid" % sys.argv[0])
         sys.exit(-1)
-
-
-
-
-
