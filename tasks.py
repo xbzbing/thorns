@@ -7,15 +7,11 @@
     Thorns Project 分布式任务控制脚本
     tasks
         -- nmap_dispath			# nmap 扫描调度函数
-        -- hydra_dispath 		# hydra 暴力破解调度函数
-        -- medusa_dispath 		# medusa 暴力破解调度函数
-
-    worker run()
-        --workdir=/home/xbzbing/thorns
 """
 
 import subprocess
 from celery import Celery, platforms
+import os
 
 # 初始化芹菜对象
 app = Celery()
@@ -28,7 +24,7 @@ app.conf.update(
     CELERY_IMPORTS=("tasks", ),
     BROKER_URL='redis://127.0.0.1:6379/0',
     # CELERY_RESULT_BACKEND = 'db+scheme://user:password@host:port/dbname'
-    CELERY_RESULT_BACKEND='db+mysql://celery:celery1@127.0.0.1:3306/wscan',
+    # CELERY_RESULT_BACKEND='db+mysql://celery:celery1@127.0.0.1:3306/wscan',
     CELERY_TASK_SERIALIZER='json',
     CELERY_RESULT_SERIALIZER='json',
     CELERY_TIMEZONE='Asia/Shanghai',
@@ -44,12 +40,14 @@ app.conf.update(
 
 @app.task
 def nmap_dispath(targets, taskid=None):
+    run_script_path = get_current_path()
     # nmap环境参数配置
     if taskid == None:
         cmdline = 'python wyportmap.py %s' % targets
     else:
         cmdline = 'python wyportmap.py %s %s' % (targets, taskid)
-    nmap_proc = subprocess.Popen(cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    nmap_proc = subprocess.Popen(cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                 cwd=run_script_path)
     process_output = nmap_proc.stdout.readlines()
     return process_output
 
@@ -57,8 +55,7 @@ def nmap_dispath(targets, taskid=None):
 @app.task
 def hydra_dispath(targets, protocol, userdic, passdic, taskid=None):
     # 命令执行环境参数配置
-    run_script_path = '/home/xbzbing/thorns/script/hydra'
-    run_env = '{"LD_LIBRARY_PATH": "/home/xbzbing/thorns/libs/"}'
+    run_script_path = get_current_path()
 
     if taskid == None:
         cmdline = 'python hydra.py %s %s %s %s' % (targets, protocol, userdic, passdic)
@@ -66,7 +63,7 @@ def hydra_dispath(targets, protocol, userdic, passdic, taskid=None):
         cmdline = 'python hydra.py %s %s %s %s %s' % (targets, protocol, userdic, passdic, taskid)
 
     nmap_proc = subprocess.Popen(cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                 cwd=run_script_path, env=run_env)
+                                 cwd=run_script_path)
 
     process_output = nmap_proc.stdout.readlines()
     return process_output
@@ -75,8 +72,7 @@ def hydra_dispath(targets, protocol, userdic, passdic, taskid=None):
 @app.task
 def medusa_dispath(targets, protocol, userdic, passdic, taskid=None):
     # 命令执行环境参数配置
-    run_script_path = '/home/xbzbing/thorns/script/medusa'
-    run_env = '{"LD_LIBRARY_PATH": "/home/xbzbing/thorns/libs/"}'
+    run_script_path = get_current_path()
 
     if taskid == None:
         cmdline = 'python medusa.py %s %s %s %s' % (targets, protocol, userdic, passdic)
@@ -84,11 +80,14 @@ def medusa_dispath(targets, protocol, userdic, passdic, taskid=None):
         cmdline = 'python medusa.py %s %s %s %s %s' % (targets, protocol, userdic, passdic, taskid)
 
     nmap_proc = subprocess.Popen(cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                 cwd=run_script_path, env=run_env)
+                                 cwd=run_script_path)
 
     process_output = nmap_proc.stdout.readlines()
     return process_output
 
+
+def get_current_path():
+    return os.path.dirname(os.path.abspath(__file__))
 
 
 

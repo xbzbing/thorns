@@ -106,4 +106,8 @@ docs/_build/
 # PyBuilder
 target/
 
+#project
+local/
 
+#wyscan
+utils/wyscan
