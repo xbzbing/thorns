@@ -41,13 +41,14 @@ app.conf.update(
 
 
 @app.task
-def nmap_dispath(targets, taskid=None):
+def nmap_dispath(targets, task_id=None):
     run_script_path = get_current_path()
     # nmap环境参数配置
-    if taskid == None:
-        cmdline = 'python wyportmap.py %s' % targets
+    if task_id:
+        cmdline = 'python wyportmap.py %s %s' % (targets, task_id)
     else:
-        cmdline = 'python wyportmap.py %s %s' % (targets, taskid)
+        cmdline = 'python wyportmap.py %s' % targets
+
     nmap_proc = subprocess.Popen(cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                  cwd=run_script_path)
     process_output = nmap_proc.stdout.readlines()
