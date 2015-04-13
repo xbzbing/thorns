@@ -22,9 +22,11 @@ platforms.C_FORCE_ROOT = True
 # 修改celery的全局配置
 app.conf.update(
     CELERY_IMPORTS=("tasks", ),
-    BROKER_URL='redis://127.0.0.1:6379/0',
+    # BROKER_URL='redis://127.0.0.1:6379/0',
     # CELERY_RESULT_BACKEND = 'db+scheme://user:password@host:port/dbname'
     # CELERY_RESULT_BACKEND='db+mysql://celery:celery1@127.0.0.1:3306/wscan',
+    BROKER_URL="amqp://guest:guest@172.16.146.145:5672//",
+    CELERY_RESULT_BACKEND="redis://172.16.146.145:6379/0",
     CELERY_TASK_SERIALIZER='json',
     CELERY_RESULT_SERIALIZER='json',
     CELERY_TIMEZONE='Asia/Shanghai',
@@ -48,40 +50,6 @@ def nmap_dispath(targets, taskid=None):
         cmdline = 'python wyportmap.py %s %s' % (targets, taskid)
     nmap_proc = subprocess.Popen(cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                  cwd=run_script_path)
-    process_output = nmap_proc.stdout.readlines()
-    return process_output
-
-
-@app.task
-def hydra_dispath(targets, protocol, userdic, passdic, taskid=None):
-    # 命令执行环境参数配置
-    run_script_path = get_current_path()
-
-    if taskid == None:
-        cmdline = 'python hydra.py %s %s %s %s' % (targets, protocol, userdic, passdic)
-    else:
-        cmdline = 'python hydra.py %s %s %s %s %s' % (targets, protocol, userdic, passdic, taskid)
-
-    nmap_proc = subprocess.Popen(cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                 cwd=run_script_path)
-
-    process_output = nmap_proc.stdout.readlines()
-    return process_output
-
-
-@app.task
-def medusa_dispath(targets, protocol, userdic, passdic, taskid=None):
-    # 命令执行环境参数配置
-    run_script_path = get_current_path()
-
-    if taskid == None:
-        cmdline = 'python medusa.py %s %s %s %s' % (targets, protocol, userdic, passdic)
-    else:
-        cmdline = 'python medusa.py %s %s %s %s %s' % (targets, protocol, userdic, passdic, taskid)
-
-    nmap_proc = subprocess.Popen(cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                 cwd=run_script_path)
-
     process_output = nmap_proc.stdout.readlines()
     return process_output
 
