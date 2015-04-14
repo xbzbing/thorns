@@ -3,6 +3,7 @@
 # wyfunc.py
 # email: ringzero@0x557.org
 
+
 def ip2num(ip):
     ip = [int(x) for x in ip.split('.')]
     return ip[0] << 24 | ip[1] << 16 | ip[2] << 8 | ip[3]
