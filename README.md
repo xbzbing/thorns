@@ -5,7 +5,14 @@ modify
 -----------------------------------
 * 使用RabbitMQ作为broker
 * 使用Redis存储celery任务执行结果
+* 删除了部分本地库代码，需要使用pip安装，主要原因是现在代码不稳定，等整体修改完成后再考虑更新最新的类库到本地。
 
+```bash
+sudo pip install python-nmap
+sudo pip install dnspython
+sudo pip install flower
+sudo apt-get install rabbitmq-server
+```
 运行流程
 -----------------------------------
 * 启动redis内存服务器，作为队列存储数据库使用

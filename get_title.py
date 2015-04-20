@@ -35,7 +35,7 @@ def get_title(target):
         url = "http://" + target
     try:
         request = urllib2.Request(url)
-        request.add_header("User_Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; chromeframe/12.0.742.112)")
+        request.add_header("User_Agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)")
         response = urllib2.urlopen(request, timeout=10)
         if response.getcode() == 200:
             html = response.read()
@@ -63,8 +63,8 @@ def get_titles(targets, threads=5):
     return results
 
 
-def get_time_now(time_format="%Y-%m-%d %H:%M:%S"):
-    return time.strftime(time_format, time.localtime(time.time()))
+def get_time_now(time_format="%F %X"):
+    return time.strftime(time_format)
 
 if __name__ == "__main__":
     if len(sys.argv) == 2 or len(sys.argv) == 3:
